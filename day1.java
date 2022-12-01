@@ -29,22 +29,12 @@ public class day1 {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-
-        for (int i = 0; i <= 2; i++) {
-            max = -1;
-            for (int j = 0; j < totals.size(); j++) {
-                /* if statement allows us to also set the index, Math.max does not easily allow */
-                if (totals.get(j) > max) {
-                    max = totals.get(j);
-                    index = j;
-                }
-            }
-            if (i == 0) {
-                System.out.println("Part 1: " + max);
-            }
-            totals.remove((totals.indexOf(max)));
-            topThree += max;
-        }
+        
+        Collections.sort(totals, Collections.reverseOrder());
+        
+        System.out.println("Part 1: " + totals.get(0));
+        
+        topThree = totals.get(0) + totals.get(1) + totals.get(2);
 
         System.out.println("Part 2: " + topThree);
     }
