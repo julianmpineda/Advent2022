@@ -7,7 +7,7 @@ public class day1 {
         int count = 0;
 
         try {
-            File myObj = new File("day1.txt");
+            File myObj = new File("data1.txt");
 
             Scanner myReader = new Scanner(myObj);
             while (myReader.hasNextLine()) {
