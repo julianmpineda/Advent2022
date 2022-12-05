@@ -32,13 +32,14 @@ public class day4 {
 
             if ((elves[0] <= elves[2] && elves[1] >= elves[3]) 
                 || (elves[2] <= elves[0] && elves[3] >= elves[1])) {
-                                fullOverlapCount++;
+                fullOverlapCount++;
+                anyOverlapCount++;
             }
 
             // broken down into 2 if-statements; can be done in one single if-statement but hard to parse.
 
             //check to see if second range starts or ends within first
-            if (((elves[0] <= elves[2] && elves[2] <= elves[1])
+            else if (((elves[0] <= elves[2] && elves[2] <= elves[1])
                     || (elves[0] <= elves[3] && elves[3] <= elves[1]))) {
                 anyOverlapCount++;
 
