@@ -4,7 +4,8 @@ import java.util.*;
 public class day4 {
     public static void main(String[] args) {
         List<int[]> sections = new ArrayList<int[]>(4);
-        int overlapCount = 0;
+        int fullOverlapCount = 0;
+        int anyOverlapCount = 0;
 
         try {
             File myObj = new File("data4.txt");
@@ -31,9 +32,24 @@ public class day4 {
 
             if ((elves[0] <= elves[2] && elves[1] >= elves[3]) 
                 || (elves[2] <= elves[0] && elves[3] >= elves[1])) {
-                overlapCount++;
+                                fullOverlapCount++;
+            }
+
+            // broken down into 2 if-statements; can be done in one single if-statement but hard to parse.
+
+            //check to see if second range starts or ends within first
+            if (((elves[0] <= elves[2] && elves[2] <= elves[1])
+                    || (elves[0] <= elves[3] && elves[3] <= elves[1]))) {
+                anyOverlapCount++;
+
+                //check to see if first range starts or ends within second
+            } else if ((elves[2] <= elves[0] && elves[0] <= elves[3])
+                    || (elves[2] <= elves[1] && elves[1] <= elves[3])) {
+                anyOverlapCount++;
             }
         }
-        System.out.println("Part 1: "  + overlapCount);
+
+        System.out.println("Part 1: "  + fullOverlapCount);
+        System.out.println("Part 2: "  + anyOverlapCount);
     }
 }
