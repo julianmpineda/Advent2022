@@ -19,6 +19,7 @@ public class day5 {
 
         List<List<Character>> crates = new ArrayList<>();
         List<Character> boxStack = new ArrayList<Character>();
+        Boolean crateMover9001 = true;
 
         //stack 1, ind 0
         boxStack.add('Q');
@@ -135,7 +136,7 @@ public class day5 {
         List<String> commands = new ArrayList<String>();
 
         try {
-            File myObj = new File("C:\\Users\\jpin3\\IdeaProjects\\AdventOfCode2022\\src\\data5");
+            File myObj = new File("data5.txt");
             Scanner myReader = new Scanner(myObj);
 
             while (myReader.hasNextLine()) {
@@ -149,28 +150,60 @@ public class day5 {
         
         int count = 0;
 
-        while (count < commands.size()) {
+        if (crateMover9001) {
+            while (count < commands.size()) {
 
-            String comNum = commands.get(count).replaceAll("\\D"," ");
-            Scanner comScan = new Scanner(comNum);
-            int[] commandNum = new int[3];
+                String comNum = commands.get(count).replaceAll("\\D", " ");
+                Scanner comScan = new Scanner(comNum);
+                int[] commandNum = new int[3];
 
-            for (int i = 0; i < 3; i++) {
-                commandNum[i] = comScan.nextInt();
-                //change from stack number to index
-                if (i == 1 || i == 2) {
-                    commandNum[i] -= 1;
+                for (int i = 0; i < 3; i++) {
+                    commandNum[i] = comScan.nextInt();
+                    //change from stack number to index
+                    if (i == 1 || i == 2) {
+                        commandNum[i] -= 1;
+                    }
                 }
-            }
 
-            //[Move X boxes from Y to Z]
-            for (int j = 0; j < commandNum[0]; j++) {
-                char box = crates.get(commandNum[1]).get(crates.get(commandNum[1]).size() - 1);
-                crates.get(commandNum[1]).remove(crates.get(commandNum[1]).size() - 1);
-                crates.get(commandNum[2]).add(box);
-            }
+                String moveStack = "";
+                //[Remove X boxes from Y, add to moveStack]
+                for (int j = 0; j < commandNum[0]; j++) {
+                    char box = crates.get(commandNum[1]).get(crates.get(commandNum[1]).size() - 1);
+                    moveStack += box;
+                    crates.get(commandNum[1]).remove(crates.get(commandNum[1]).size() - 1);
+                }
 
-            count++;
+                //Reverse, now pull from moveStack front and add to the Z stack
+                for (int k = commandNum[0]; k > 0; k--) {
+                    crates.get(commandNum[2]).add(moveStack.charAt(k-1));
+                    moveStack = moveStack.substring(0, moveStack.length()-1);
+                }
+
+                count++;
+            }
+        } else {
+            while (count < commands.size()) {
+
+                String comNum = commands.get(count).replaceAll("\\D", " ");
+                Scanner comScan = new Scanner(comNum);
+                int[] commandNum = new int[3];
+
+                for (int i = 0; i < 3; i++) {
+                    commandNum[i] = comScan.nextInt();
+                    //change from stack number to index
+                    if (i == 1 || i == 2) {
+                        commandNum[i] -= 1;
+                    }
+                }
+
+                //[Move X boxes from Y to Z]
+                for (int j = 0; j < commandNum[0]; j++) {
+                    char box = crates.get(commandNum[1]).get(crates.get(commandNum[1]).size() - 1);
+                    crates.get(commandNum[1]).remove(crates.get(commandNum[1]).size() - 1);
+                    crates.get(commandNum[2]).add(box);
+                }
+                count++;
+            }
         }
         //printout result
 
