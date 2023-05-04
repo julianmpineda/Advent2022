@@ -4,11 +4,11 @@ import java.util.Scanner;
 
 public class day6 {
     public static void main(String[] args) {
-
-        int test = 3;
-        String testSeq = "";
+	    
+        int test = 4, testTwo = 14;
         String input = "";
         boolean markerFound = false;
+        boolean messageFound = false;
 
         try {
             File myObj = new File("data6.txt");
@@ -20,21 +20,44 @@ public class day6 {
             e.printStackTrace();
         }
 
-	      //test sequence from the rear, saves time if the matching pair is char 3 and 4. Skip test to remove offending character
-        while (!markerFound && test < input.length()) {
-            testSeq = input.substring(test - 3, test + 1);
+        while (!(markerFound && messageFound)) {
+            //Find Marker first
+            if (!markerFound) {
+                if (checker(input.substring(test - 4, test)) == true) {
+                    System.out.println("Marker after char: " + (test));
+                    markerFound = true;
+                    testTwo = test + 10;
+                } else {
+                    test++;
+                }
+            }
 
-            if (testSeq.charAt(2) == testSeq.charAt(3)) {
-                test += 3;
-            } else if (testSeq.charAt(1) == testSeq.charAt(2) || testSeq.charAt(1) == testSeq.charAt(3)) {
-                test += 2;
-            } else if (testSeq.charAt(0) == testSeq.charAt(1) || testSeq.charAt(0) == testSeq.charAt(2) || testSeq.charAt(0) == testSeq.charAt(3)) {
-                test++;
-            } else {
-                markerFound = true;
+            //Start testing at Marker 0 index to avoid retesting
+            if (markerFound && !messageFound) {
+                if (checker(input.substring(testTwo - 14, testTwo)) == true) {
+                    System.out.println("Marker after char: " + (testTwo));
+                    messageFound = true;
+                } else {
+                    testTwo++;
+                }
+            }
+        }
+    }
+
+    //Tests by moving chars into an array and tallying the numbers. Returns false when it detects the first repeat.
+    public static boolean checker(String testStr) {
+        int testLen = testStr.length();
+
+        char[] alphaArr = new char[26];
+        char[] testArr = testStr.toCharArray();
+
+        for (int i = 0; i < testLen; i++) {
+            alphaArr[(testArr[i] - 'a')]++;
+            if (alphaArr[(testArr[i] - 'a')] > 1) {
+                return false;
             }
         }
 
-        System.out.println("Marker after char: " + (test + 1));
-	}
+        return true;
+    }
 }
