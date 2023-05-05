@@ -1,0 +1,92 @@
+
+import java.io.*;
+import java.util.*;
+
+public class day9 {
+    public static void main(String[] args) {
+
+        List<String> track = new ArrayList<String>();
+        List<String[]> directions = new ArrayList<String[]>();
+        int[] posHead = new int[]{0,0};
+        int[] posHeadNew = new int[2];
+        int[] posTail = new int[]{0,0};
+
+        track.add("0 0");
+
+        try {
+            File myObj = new File("data9.txt");
+            Scanner myReader = new Scanner(myObj);
+            while (myReader.hasNextLine()) {
+                directions.add(myReader.nextLine().split(" "));
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        for (int i = 0; i < directions.size(); i++) {
+            String[] move = directions.get(i);
+            int steps = Integer.parseInt(move[1]);
+
+            switch(move[0]) {
+                case "R":
+                    for (int j = 0; j < steps; j++) {
+                        posHeadNew[0] = 1 + posHead[0];
+                        if (Math.abs(posHeadNew[0] - posTail[0]) > 1) {
+                            posTail[0] = posHead[0];
+                            posTail[1] = posHead[1];
+                            String strPos = "" + posTail[0] + " " + posTail[1];
+                            if (!track.contains(strPos)) {
+                                track.add(strPos);
+                            }
+                        }
+                        posHead[0] = posHeadNew[0];
+                    }
+                    break;
+                case "L":
+                    for (int j = 0; j < steps; j++) {
+                        posHeadNew[0] = posHead[0] - 1;
+                        if (Math.abs(posHeadNew[0] - posTail[0]) > 1) {
+                            posTail[0] = posHead[0];
+                            posTail[1] = posHead[1];
+                            String strPos = "" + posTail[0] + " " + posTail[1];
+                            if (!track.contains(strPos)) {
+                                track.add(strPos);
+                            }
+                        }
+                        posHead[0] = posHeadNew[0];
+                    }
+                    break;
+                case "U":
+                    for (int j = 0; j < steps; j++) {
+                        posHeadNew[1] = 1 + posHead[1];
+                        if (Math.abs(posHeadNew[1] - posTail[1]) > 1) {
+                            posTail[0] = posHead[0];
+                            posTail[1] = posHead[1];
+                            String strPos = "" + posTail[0] + " " + posTail[1];
+                            if (!track.contains(strPos)) {
+                                track.add(strPos);
+                            }
+                        }
+                        posHead[1] = posHeadNew[1];
+                    }
+                    break;
+                case "D":
+                    for (int j = 0; j < steps; j++) {
+                        posHeadNew[1] = posHead[1] - 1;
+                        if (Math.abs(posHeadNew[1] - posTail[1]) > 1) {
+                            posTail[0] = posHead[0];
+                            posTail[1] = posHead[1];
+                            String strPos = "" + posTail[0] + " " + posTail[1];
+                            if (!track.contains(strPos)) {
+                                track.add(strPos);
+                            }
+                        }
+                        posHead[1] = posHeadNew[1];
+                    }
+                    break;
+            }
+        }
+
+        System.out.println("sumTrack: " + track.size());
+    }
+}
