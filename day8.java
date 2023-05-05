@@ -7,6 +7,7 @@ public class day8 {
         List<String> fileLines = new ArrayList<String>();
         int xAxis = 0, yAxis = 0;
         int visTreeCount = 0;
+        int maxScore = Integer.MIN_VALUE;
 
         try {
             File myObj = new File("data8.txt");
@@ -14,83 +15,78 @@ public class day8 {
             while (myReader.hasNextLine()) {
                 fileLines.add(myReader.nextLine());
             }
-        } catch (
-                FileNotFoundException e) {
+        } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
 
-        xAxis = fileLines.get(0).length();
-        yAxis = fileLines.size();
+        xAxis = fileLines.size();
+        yAxis = fileLines.get(0).length();
 
-        //3 Arrays: 1. Data, 2. Data flipped on the diagonal, 3. Tree Visibility Array
-        int[][] forest = new int[xAxis][yAxis];
-        int[][] forest90 = new int[yAxis][xAxis];
-        int[][] visForest = new int[yAxis][xAxis];
+        //2 Arrays: 1. Data, 2. Data flipped on the diagonal
+        int[][] forest = new int[yAxis][xAxis];
+        int[][] forest90 = new int[xAxis][yAxis];
 
         //Create both original and flipped arrays
-        for (int i = 0; i < yAxis; i++) {
+        for (int i = 0; i < xAxis; i++) {
             char[] temp = fileLines.get(i).toCharArray();
-            for (int j = 0; j < yAxis; j++) {
+            for (int j = 0; j < xAxis; j++) {
                 forest[i][j] = temp[j] - '0';
                 forest90[j][i] = forest[i][j];
             }
         }
 
-        //Use recursion to check along line while still shorter than tree
-        for (int i = 0; i < xAxis; i++) {
-            for (int j = 0; j < yAxis; j++) {
+        //Use recursion to check both visibility and scenic score
+        for (int i = 0; i < yAxis; i++) {
+            for (int j = 0; j < xAxis; j++) {
                 int tree = forest[i][j];
-                if (checkLeft(tree, j, forest[i]) || checkRight(tree, j, forest[i]) || checkUp(tree, i, forest90[j]) || checkDown(tree, i, forest90[j])){
-                    visTreeCount++;
-                    visForest[j][i] = 1;
-                }
-            }
-        }
-        System.out.println(visTreeCount + " trees visible");
+                int[] left = upLeft(tree, j, forest[i]);
+                int[] right = downRight(tree, j, forest[i]);
+                int[] up = upLeft(tree, i, forest90[j]);
+                int[] down = downRight(tree, i, forest90[j]);
 
+                if (left[0] + right[0] + up[0] + down[0] > 0) {
+                    visTreeCount++;
+                }
+
+                int scenicScore = left[1] * right[1] * up[1] * down[1];
+                maxScore = Integer.max(maxScore, scenicScore);
+            }
+
+        }
+
+        System.out.println(visTreeCount + " trees visible");
+        System.out.println(maxScore + " is the best scenic score");
     }
 
-    private static boolean checkLeft(int height, int x, int[] test) {
+    //checks both up and left, uses the flipped matrix for vertical
+    private static int[] upLeft(int height, int x, int[] test) {
+        //return [visible flag 1:0 , count of visible trees]
+        int count = 1;
         if (x != 0) {
             if (test[x-1] >= height) {
-                return false;
+                return new int[]{0, 1};
             } else {
-                return checkLeft(height, x-1, test);
+                int temp[] = upLeft(height, x-1, test);
+                count += temp[1];
+                return new int[]{temp[0], count};
             }
         }
-        return true;
+        return new int[]{1, 0};
     }
 
-    private static boolean checkRight(int height, int x, int[] test) {
+    //checks both down and right, uses the flipped matrix for vertical
+    private static int[] downRight(int height, int x, int[] test) {
+        //return [visible flag 1:0 , count of visible trees]
+        int count = 1;
         if (x != test.length-1) {
             if (test[x+1] >= height) {
-                return false;
+                return new int[]{0, 1};
             } else {
-                return checkRight(height,x+1, test);
+                int temp[] = downRight(height, x+1, test);
+                count += temp[1];
+                return new int[]{temp[0], count};
             }
         }
-        return true;
-    }
-
-    private static boolean checkUp(int height, int y, int[] test) {
-        if (y != 0) {
-            if (test[y-1] >= height) {
-                return false;
-            } else {
-                return checkUp(height,y-1, test);
-            }
-        }
-        return true;
-    }
-
-    private static boolean checkDown(int height, int y, int[] test) {
-        if (y != test.length-1) {
-            if (test[y+1] >= height) {
-                return false;
-            } else {
-                return checkDown(height,y+1, test);
-            }
-        }
-        return true;
+        return new int[]{1, 0};
     }
 }
