@@ -19,22 +19,22 @@ public class day10 {
 
         while (cycleCount < 220) {
             String command = instructions.get(i).substring(0,4);
+            if ((cycleCount == 20 || (cycleCount - 20)%40 == 0)) {
+                System.out.println("Cycle " + cycleCount + ": x: " + x + " signal strength: " + x*cycleCount);
+                signalSum += x*cycleCount;
+            }
+
             if (command.equals("noop")) {
                 cycleCount++;
-                if ((cycleCount == 20 || (cycleCount - 20)%40 == 0)) {
-                    signalSum += x*cycleCount;
-                }
             } else if (command.equals("addx")) {
-                for (int j = 0; j < 2; j++) {
                     cycleCount++;
                     if (cycleCount == 20 || (cycleCount - 20)%40 == 0 ) {
+                        System.out.println("Cycle " + cycleCount + ": x: " + x + " signal strength: " + x*cycleCount);
                         signalSum += x*cycleCount;
                     }
-                    if (j == 1) {
-                        x += Integer.parseInt(instructions.get(i).substring(5));
-                    }
+                    x += Integer.parseInt(instructions.get(i).substring(5));
+                    cycleCount++;
                 }
-            }
             i++;
         }
         System.out.println("Signal Strengths Sum: " + signalSum);
