@@ -3,7 +3,8 @@ import java.util.*;
 public class day10 {
     public static void main(String[] args) {
 
-        int x = 1, i = 0, cycleCount = 0, signalSum = 0;
+        int x = 1, i = 0, cycleCount = 1, signalSum = 0;
+        String screen = "";
         List<String> instructions = new ArrayList<String>();
 
 
@@ -17,26 +18,40 @@ public class day10 {
             e.printStackTrace();
         }
 
-        while (cycleCount < 220) {
+        while (cycleCount <= 240) {
             String command = instructions.get(i).substring(0,4);
-            if ((cycleCount == 20 || (cycleCount - 20)%40 == 0)) {
-                System.out.println("Cycle " + cycleCount + ": x: " + x + " signal strength: " + x*cycleCount);
+
+            if ((cycleCount - 20)%40 == 0) {
                 signalSum += x*cycleCount;
             }
 
             if (command.equals("noop")) {
+
+                screen += pixelPrint(x, cycleCount-1);
                 cycleCount++;
+
             } else if (command.equals("addx")) {
-                    cycleCount++;
-                    if (cycleCount == 20 || (cycleCount - 20)%40 == 0 ) {
-                        System.out.println("Cycle " + cycleCount + ": x: " + x + " signal strength: " + x*cycleCount);
-                        signalSum += x*cycleCount;
-                    }
-                    x += Integer.parseInt(instructions.get(i).substring(5));
-                    cycleCount++;
+
+                screen += pixelPrint(x, cycleCount-1);
+                cycleCount++;
+
+                if ((cycleCount - 20)%40 == 0) {
+                    signalSum += x*cycleCount;
+                }
+
+                screen += pixelPrint(x, cycleCount-1);
+                x += Integer.parseInt(instructions.get(i).substring(5));
+                cycleCount++;
                 }
             i++;
-        }
+            }
+
         System.out.println("Signal Strengths Sum: " + signalSum);
+
+        for (int j = 0; j <screen.length(); j++) {
+            System.out.print(screen.charAt(j));
+            if ((j+1)%40 == 0) {
+                System.out.print("\n");
+            }
+        }
     }
-}
